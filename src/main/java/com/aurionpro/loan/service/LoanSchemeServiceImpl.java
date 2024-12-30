@@ -69,7 +69,7 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 			throw new RuntimeException("Cannot find LoanScheme with  Id: "+loanSchemeId);
 		
 		LoanScheme dbLoanScheme = optionalLoanScheme.get();
-		dbLoanScheme.setDeleted(true);
+//		dbLoanScheme.setDeleted(true);
 			return modelMapper.map(dbLoanScheme, LoanSchemeResponseDto.class);
 	}
 

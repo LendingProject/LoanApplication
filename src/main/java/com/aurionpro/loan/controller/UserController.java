@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,112 +34,119 @@ import com.aurionpro.loan.service.UserServiceImpl;
 
 @RestController
 @RequestMapping("/loanapp")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
 
-	
-	
-	  
-	 @PostMapping("/upload")
-	    public ResponseEntity<RequiredDocumentsResponseDto> uploadFile(@RequestParam("file") MultipartFile file) {
-	        try {
-	            // Call the service to handle file upload and get the URL
-	            RequiredDocumentsResponseDto response = userService.uploadFile(file);
+	// private final UserService userService;
 
-	            // Return the response with status and URL or error message
-	            return ResponseEntity.ok(response);
-	        } catch (IOException e) {
-	            // Log and return an error response in case of an exception
-	            e.printStackTrace();
-	            RequiredDocumentsResponseDto errorResponse = new RequiredDocumentsResponseDto();
-	            errorResponse.setStatus("FAILURE");
-	            errorResponse.setMessage("Error occurred while uploading the file: " + e.getMessage());
-	            return ResponseEntity.status(500).body(errorResponse);
-	        }
-	    }
-	
-	@PostMapping("/addFile")
-	public ResponseEntity<RequiredDocumentsResponseDto> addFileToDatabase(@RequestParam MultipartFile file, RequiredDocumentsRequestDto requiredDocumentsRequestDto){
-		return ResponseEntity.ok(userService.addFileToDatabase(requiredDocumentsRequestDto));
+	// public UserController(UserService userService) {
+	// this.userService = userService;
+	// }
+
+	@PostMapping("/upload")
+	public ResponseEntity<RequiredDocumentsResponseDto> uploadFile(@RequestParam("file") MultipartFile file) {
+		try {
+			// Call the service to handle file upload and get the URL
+			RequiredDocumentsResponseDto response = userService.uploadFile(file);
+
+			// Return the response with status and URL or error message
+			return ResponseEntity.ok(response);
+		} catch (IOException e) {
+			// Log and return an error response in case of an exception
+			e.printStackTrace();
+			RequiredDocumentsResponseDto errorResponse = new RequiredDocumentsResponseDto();
+			errorResponse.setStatus("FAILURE");
+			errorResponse.setMessage("Error occurred while uploading the file: " + e.getMessage());
+			return ResponseEntity.status(500).body(errorResponse);
+		}
 	}
 
-	
 	@PostMapping("/registeruser")
-	private ResponseEntity<UserResponseDto> addUser(@RequestBody UserRequestDto userRequestDto){
-		
+	private ResponseEntity<UserResponseDto> addUser(@RequestBody UserRequestDto userRequestDto) {
+
 		return ResponseEntity.ok(userService.addUser(userRequestDto));
 	}
-	
-	
+
 	@GetMapping("/loanschemes")
-	public ResponseEntity<PageResponseDto<LoanSchemeResponseDto>> getAllLoanSchemeOfUser(@RequestParam int pageSize,@RequestParam int pageNumber){ 
-		   
-		  return ResponseEntity.ok(userService.getAllLoanScheme(pageNumber, pageSize)); 
-		 }
-	
-	@PostMapping("/addloan")
-	private ResponseEntity<LoanResponseDto> applyLoan(@RequestBody LoanRequestDto loanRequestDto){
-	     
-	     return ResponseEntity.ok(userService.applyLoan(loanRequestDto));
-		
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
+	public ResponseEntity<PageResponse<LoanSchemeResponseDto>> getAllLoanSchemeOfUser(@RequestParam int pageSize,
+			@RequestParam int pageNumber) {
+
+		return ResponseEntity.ok(userService.getAllLoanScheme(pageNumber, pageSize));
+
 	}
-	
-	
-	
-	
+
+	@GetMapping("/appliedloans")
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
+	public ResponseEntity<PageResponse<LoanResponseDto>> getAllAppliedLoan(int pageSize, int pageNumber) {
+
+		return ResponseEntity.ok(userService.getAllAppliedLoan(pageNumber, pageSize));
+
+	}
+
+	@PostMapping("/addloan")
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
+	private ResponseEntity<LoanResponseDto> applyLoan(@RequestBody LoanRequestDto loanRequestDto) {
+
+		return ResponseEntity.ok(userService.applyLoan(loanRequestDto));
+
+	}
+
 	@PostMapping("/payemi")
-	private ResponseEntity<EmiResponseDto> emiPayment(@RequestBody EmiRequestDto emiRequestDto){
-		
+	private ResponseEntity<EmiResponseDto> emiPayment(@RequestBody EmiRequestDto emiRequestDto) {
+
 		return ResponseEntity.ok(userService.emiPayment(emiRequestDto));
 	}
-	
+
 	@GetMapping("/allemi")
-	public ResponseEntity<PageResponseDto<EmiResponseDto>> getAllEmis(@RequestParam int pageSize,@RequestParam int pageNumber){ 
-		   
-		  return ResponseEntity.ok(userService.getAllEmis(pageNumber, pageSize)); 
+	public ResponseEntity<PageResponseDto<EmiResponseDto>> getAllEmis(@RequestParam int pageSize,
+			@RequestParam int pageNumber) {
+
+		return ResponseEntity.ok(userService.getAllEmis(pageNumber, pageSize));
 	}
-	
+
 	@PostMapping("/submitquery")
-	private ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto queryRequestDto){
-		
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
+	private ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto queryRequestDto) {
+
 		return ResponseEntity.ok(userService.submitQueries(queryRequestDto));
 	}
-	
+
 	@GetMapping("/allqueries")
-	public ResponseEntity<PageResponseDto<EnquiryResponseDto>> getAllQueries(@RequestParam int pageSize,@RequestParam int pageNumber){ 
-		   
-		  return ResponseEntity.ok(userService.getAllQueries(pageNumber, pageSize)); 
-		 }
+	public ResponseEntity<PageResponseDto<EnquiryResponseDto>> getAllQueries(@RequestParam int pageSize,
+			@RequestParam int pageNumber) {
 
-    @GetMapping("/users")
-    public ResponseEntity<PageResponse<UserAdminViewResponse>> getAllUsers(@RequestParam(defaultValue = "0") int pageNumber,
-                                                                           @RequestParam(defaultValue = "10") int pageSize) {
-        PageResponse<UserAdminViewResponse> response = userService.getAllUser(pageSize, pageNumber);
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(userService.getAllQueries(pageNumber, pageSize));
+	}
 
-    @GetMapping("/users/search")
-    public ResponseEntity<PageResponse<UserAdminViewResponse>> getUsersByFirstName(@RequestParam(defaultValue = "0") int pageNumber,
-                                                                                   @RequestParam(defaultValue = "10") int pageSize,
-                                                                                   @RequestParam String firstName) {
-        PageResponse<UserAdminViewResponse> response = userService.getUserByFirstName(pageSize, pageNumber, firstName);
-        return ResponseEntity.ok(response);
-    }
+	@GetMapping("/users")
+	public ResponseEntity<PageResponse<UserAdminViewResponse>> getAllUsers(
+			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
+		PageResponse<UserAdminViewResponse> response = userService.getAllUser(pageSize, pageNumber);
+		return ResponseEntity.ok(response);
+	}
 
-    @GetMapping("/users/email")
-    public ResponseEntity<UserAdminViewResponse> getUserByEmail(@RequestParam String email) {
-        UserAdminViewResponse response = userService.getUserByEmail(email);
-        return ResponseEntity.ok(response);
-    }
+	@GetMapping("/users/search")
+	public ResponseEntity<PageResponse<UserAdminViewResponse>> getUsersByFirstName(
+			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam String firstName) {
+		PageResponse<UserAdminViewResponse> response = userService.getUserByFirstName(pageSize, pageNumber, firstName);
+		return ResponseEntity.ok(response);
+	}
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<UserAdminViewResponse> getUserById(@PathVariable int id) {
-        UserAdminViewResponse response = userService.getUserById(id);
-        return ResponseEntity.ok(response);
-    }
- 
+	@GetMapping("/users/email")
+	public ResponseEntity<UserAdminViewResponse> getUserByEmail(@RequestParam String email) {
+		UserAdminViewResponse response = userService.getUserByEmail(email);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/users/{id}")
+	public ResponseEntity<UserAdminViewResponse> getUserById(@PathVariable int id) {
+		UserAdminViewResponse response = userService.getUserById(id);
+		return ResponseEntity.ok(response);
+	}
 
 }

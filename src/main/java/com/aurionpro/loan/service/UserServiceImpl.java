@@ -85,28 +85,32 @@ public class UserServiceImpl  implements UserService{
 	}
 
 	@Override
-	public PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
-		
-		 Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize); 
-		 
-	     Page<LoanScheme> dbUserPage = loanSchemeRepo.findAll(pageable); 
-	      
-	     Page<LoanSchemeResponseDto> loanSchemeResponseDto = dbUserPage.map(loanScheme -> mapper.map(loanScheme, LoanSchemeResponseDto.class)); 
-	 
-	   
-	    PageResponseDto<LoanSchemeResponseDto> responsePageUser = new PageResponseDto<>(); 
+	public PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
+	    
+	    // Adjusting for 0-based index, subtract 1 from pageNumber if it's 1-based.
+	    Pageable pageable = PageRequest.of(pageNumber, pageSize); 
+	    
+	    // Fetching data from the database
+	    Page<LoanScheme> dbUserPage = loanSchemeRepo.findAll(pageable);
+	    
+	    // Mapping the LoanScheme to LoanSchemeResponseDto
+	    Page<LoanSchemeResponseDto> loanSchemeResponseDto = dbUserPage.map(loanScheme -> mapper.map(loanScheme, LoanSchemeResponseDto.class));
+
+	    // Creating the response
+	    PageResponse<LoanSchemeResponseDto> responsePageUser = new PageResponse<>();
 	    responsePageUser.setTotalElements(loanSchemeResponseDto.getTotalElements());
 	    responsePageUser.setTotalPages(loanSchemeResponseDto.getTotalPages());
 	    responsePageUser.setPageSize(loanSchemeResponseDto.getSize());
-		responsePageUser.setLastPage(loanSchemeResponseDto.isLast());
-		responsePageUser.setContents(loanSchemeResponseDto.getContent());
-		
-		System.out.println("dbUserPage: " + dbUserPage.getContent());
-		System.out.println("loanSchemeResponseDto: " + loanSchemeResponseDto.getContent());
-
-	 
+	    responsePageUser.setLastPage(loanSchemeResponseDto.isLast());
+	    responsePageUser.setContents(loanSchemeResponseDto.getContent());
+	    
+	    // Debugging: Optional - Remove if no longer needed
+	    // System.out.println("dbUserPage: " + dbUserPage.getContent());
+	    // System.out.println("loanSchemeResponseDto: " + loanSchemeResponseDto.getContent());
+	    
 	    return responsePageUser;
 	}
+
 	
 	@Override
 	public LoanResponseDto applyLoan(LoanRequestDto loanRequestDto) {
@@ -346,5 +350,25 @@ public class UserServiceImpl  implements UserService{
 			return mapper.map(user, UserAdminViewResponse.class);
 		}
 
-		
+		@Override
+		public PageResponse<LoanResponseDto> getAllAppliedLoan(int pageSize, int pageNumber) {
+			
+			Pageable pageable = (Pageable) PageRequest.of(pageNumber-1, pageSize); 
+			 
+		     Page<LoanRequest> dbLoanRequest = loanRequestRepo.findAll(pageable); 
+		      
+		     Page<LoanResponseDto> loanResponseDto = dbLoanRequest.map(loan -> mapper.map(loan, LoanResponseDto.class)); 
+		 
+		   
+		    PageResponse<LoanResponseDto> responsePageLoan = new PageResponse<>(); 
+		    responsePageLoan.setTotalElements(loanResponseDto.getTotalElements());
+		    responsePageLoan.setTotalPages(loanResponseDto.getTotalPages());
+		    responsePageLoan.setPageSize(loanResponseDto.getSize());
+		    responsePageLoan.setLastPage(loanResponseDto.isLast());
+		    responsePageLoan.setContents(loanResponseDto.getContent());
+			
+
+		    return responsePageLoan;
+
+		}
 }

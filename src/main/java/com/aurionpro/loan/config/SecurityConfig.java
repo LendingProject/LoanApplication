@@ -58,10 +58,10 @@ public class SecurityConfig {
 	    http.authorizeHttpRequests(request -> request.requestMatchers("/loanapp/register").permitAll());
 	    http.authorizeHttpRequests(request -> request.requestMatchers("/loanapp/login").permitAll());
 
-	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.GET, "/loanapp/app/"));
-	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/loanapp/app/").permitAll());
-	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.PUT, "/loanapp/app/"));
-	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.DELETE, "/loanapp/app/"));
+	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.GET, "/loanapp/**"));
+	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/loanapp/**"));
+	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.PUT, "/loanapp/**"));
+	    http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.DELETE, "/loanapp/**"));
 	    http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 	    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 	    http.authorizeHttpRequests(request -> request.anyRequest().authenticated());

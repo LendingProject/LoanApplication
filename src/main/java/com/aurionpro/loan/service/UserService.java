@@ -23,7 +23,7 @@ public interface UserService {
 
 UserResponseDto addUser(UserRequestDto userRequestDto);
 	
-	PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
+	PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
 	
 	LoanResponseDto applyLoan(LoanRequestDto loanRequestDto);
 	
@@ -47,6 +47,9 @@ UserResponseDto addUser(UserRequestDto userRequestDto);
 	PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize ,int pageNumber ,String firstName);
 	UserAdminViewResponse getUserByEmail(String email);
 	UserAdminViewResponse getUserById(int Id);
+	
+	
+	PageResponse<LoanResponseDto> getAllAppliedLoan(int pageSize ,int pageNumber);
 	
 	
 	
