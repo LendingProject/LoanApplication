@@ -10,19 +10,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Data
 public class LoanResponseDto {
-	 private int loanid; // ID of the loan
-	    private int user_id; // User ID
-	    private int loanscheme_id; // Loan scheme ID
+	 private int loanid;
+	    private int user_id; 
+	    private int loanscheme_id; 
 		private int loanOfficeId;
-	    private double totalRepayAmount; // The total amount to be repaid
-	    private double loanamount; // The loan amount
-	    private int time; // The loan duration
-	    private Loanstatus loanstatus; // Loan status (approved, pending, etc.)
-	    private boolean closed; // Whether the loan is closed or still open
+	    private double totalRepayAmount;
+	    private double loanamount;
+	    private int time;
+	    private Loanstatus loanstatus; 
+	    private boolean closed;
 	    
-	    // Calculated fields
-	    private double simpleInterest; // The interest calculated for the loan
-	    private double monthlyRepayment; // Monthly repayment amount for the loan
+	   
+	    private double simpleInterest; 
+	    private double monthlyRepayment; 
 	
 	
 	

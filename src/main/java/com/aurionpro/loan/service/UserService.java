@@ -37,15 +37,15 @@ UserResponseDto addUser(UserRequestDto userRequestDto);
 	
 	EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto);
 	
-	PageResponseDto<EnquiryResponseDto> getAllQueries(int pageSize ,int pageNumber);
+	PageResponse<EnquiryResponseDto> getAllQueries(int pageSize ,int pageNumber);
 	
 	RequiredDocumentsResponseDto addFileToDatabase(RequiredDocumentsRequestDto requiredDocumentsRequestDto);
 
 	RequiredDocumentsResponseDto uploadFile(MultipartFile file) throws IOException;
 
 	PageResponse<UserAdminViewResponse> getAllUser(int pageSize ,int pageNumber);
-	PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize ,int pageNumber ,String firstName);
-	UserAdminViewResponse getUserByEmail(String email);
+//	PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize ,int pageNumber ,String firstName);
+//	UserAdminViewResponse getUserByEmail(String email);
 	UserAdminViewResponse getUserById(int Id);
 	
 	

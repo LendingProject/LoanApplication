@@ -37,14 +37,19 @@ import com.aurionpro.loan.service.UserServiceImpl;
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-
 	// private final UserService userService;
 
 	// public UserController(UserService userService) {
 	// this.userService = userService;
 	// }
+	
+	@Autowired
+	private UserService userService;
+	
+	
+	@Autowired
+	private UserServiceImpl userImpl;
+
 
 	@PostMapping("/upload")
 	public ResponseEntity<RequiredDocumentsResponseDto> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -65,7 +70,8 @@ public class UserController {
 	}
 
 	@PostMapping("/registeruser")
-	private ResponseEntity<UserResponseDto> addUser(@RequestBody UserRequestDto userRequestDto) {
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
+	public ResponseEntity<UserResponseDto> addUser(@RequestBody UserRequestDto userRequestDto) {
 
 		return ResponseEntity.ok(userService.addUser(userRequestDto));
 	}
@@ -86,17 +92,16 @@ public class UserController {
 		return ResponseEntity.ok(userService.getAllAppliedLoan(pageNumber, pageSize));
 
 	}
-
 	@PostMapping("/addloan")
 	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
-	private ResponseEntity<LoanResponseDto> applyLoan(@RequestBody LoanRequestDto loanRequestDto) {
-
-		return ResponseEntity.ok(userService.applyLoan(loanRequestDto));
-
+	public ResponseEntity<LoanResponseDto> applyLoan(@RequestBody LoanRequestDto loanRequestDto){
+	     
+	     return ResponseEntity.ok(userService.applyLoan(loanRequestDto));
+		
 	}
 
 	@PostMapping("/payemi")
-	private ResponseEntity<EmiResponseDto> emiPayment(@RequestBody EmiRequestDto emiRequestDto) {
+	public ResponseEntity<EmiResponseDto> emiPayment(@RequestBody EmiRequestDto emiRequestDto) {
 
 		return ResponseEntity.ok(userService.emiPayment(emiRequestDto));
 	}
@@ -110,13 +115,13 @@ public class UserController {
 
 	@PostMapping("/submitquery")
 	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
-	private ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto queryRequestDto) {
+	public ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto queryRequestDto) {
 
 		return ResponseEntity.ok(userService.submitQueries(queryRequestDto));
 	}
 
 	@GetMapping("/allqueries")
-	public ResponseEntity<PageResponseDto<EnquiryResponseDto>> getAllQueries(@RequestParam int pageSize,
+	public ResponseEntity<PageResponse<EnquiryResponseDto>> getAllQueries(@RequestParam int pageSize,
 			@RequestParam int pageNumber) {
 
 		return ResponseEntity.ok(userService.getAllQueries(pageNumber, pageSize));
@@ -129,19 +134,19 @@ public class UserController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/users/search")
-	public ResponseEntity<PageResponse<UserAdminViewResponse>> getUsersByFirstName(
-			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize,
-			@RequestParam String firstName) {
-		PageResponse<UserAdminViewResponse> response = userService.getUserByFirstName(pageSize, pageNumber, firstName);
-		return ResponseEntity.ok(response);
-	}
+//	@GetMapping("/users/search")
+//	public ResponseEntity<PageResponse<UserAdminViewResponse>> getUsersByFirstName(
+//			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize,
+//			@RequestParam String firstName) {
+//		PageResponse<UserAdminViewResponse> response = userService.getUserByFirstName(pageSize, pageNumber, firstName);
+//		return ResponseEntity.ok(response);
+//	}
 
-	@GetMapping("/users/email")
-	public ResponseEntity<UserAdminViewResponse> getUserByEmail(@RequestParam String email) {
-		UserAdminViewResponse response = userService.getUserByEmail(email);
-		return ResponseEntity.ok(response);
-	}
+//	@GetMapping("/users/email")
+//	public ResponseEntity<UserAdminViewResponse> getUserByEmail(@RequestParam String email) {
+//		UserAdminViewResponse response = userService.getUserByEmail(email);
+//		return ResponseEntity.ok(response);
+//	}
 
 	@GetMapping("/users/{id}")
 	public ResponseEntity<UserAdminViewResponse> getUserById(@PathVariable int id) {
