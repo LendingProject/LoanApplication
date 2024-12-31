@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Data
 public class LoanRequestDto {
+<<<<<<< HEAD
 	  @NotNull @NotBlank
 	    private int user_id;
 	    @NotNull @NotBlank
@@ -29,5 +30,21 @@ public class LoanRequestDto {
 
 	 
 	    private LoanScheme loanscheme;
+=======
+   @NotNull @NotBlank
+     private int user_id;
+     @NotNull @NotBlank
+     private int loanscheme_id; // Loan scheme ID
+     @NotNull @NotBlank
+     private double loanamount; // Amount of loan requested
+     @NotNull @NotBlank
+     private int time; // Loan duration (in months or years)
+     private double totalRepayAmount; // This can be calculated, not necessarily sent by user
+     private Loanstatus loanstatus; // Status of the loan
+     private boolean closed; // Whether the loan is closed
+
+     // Nested object: LoanScheme (optional for mapping)
+     private LoanScheme loanscheme;
+>>>>>>> d100f990cbc8cb8eaa07d0f5c16bb47716c5eb63
 
 }

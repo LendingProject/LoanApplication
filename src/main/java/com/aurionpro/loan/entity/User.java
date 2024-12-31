@@ -20,51 +20,41 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
 public class User {
 	@Id
-	@Column(name="user_id")
+	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(name="firstname")
+	@Column(name = "firstname")
 	private String firstName;
-	@Column(name="lastname")
+	@Column(name = "lastname")
 	private String lastName;
-	@Column(name="pancardNumber")
+	@Column(name = "pancardNumber")
 	private String pancardNumber;
-	@Column(name="dob")
+	@Column(name = "dob")
 	private Date dob;
-	@Column(name="contactNumber")
+	@Column(name = "contactNumber")
 	private long contactNumber;
-	@Column(name="email")
+	@Column(name = "email")
 	private String email;
 	@Enumerated(EnumType.STRING)
-	@Column(name="gender")
+	@Column(name = "gender")
 	private Gender gender;
-	@Column(name="npa")
+	@Column(name = "npa")
 	private int npa;
-	@Column(name="deleted")
+	@Column(name = "deleted")
 	private boolean deleted;
-	
-	
-	
-	
-	@OneToMany(mappedBy = "user",cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+
+	@OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<LoanRequest> loanrequest;
-	
-	 @OneToOne
-	    @JoinColumn(name = "login_id", nullable = false)
-	    private Login login;
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@OneToOne
+	@JoinColumn(name = "login_id", nullable = false)
+	private Login login;
+
 }
