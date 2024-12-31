@@ -7,11 +7,15 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+<<<<<<< HEAD
 import org.springframework.data.domain.PageImpl;
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
 import com.aurionpro.loan.dto.AdminViewLoanRequestDto;
 import com.aurionpro.loan.dto.LoanOfficerReportDto;
 import com.aurionpro.loan.dto.LoanRequestDetailsDTO;
@@ -23,6 +27,12 @@ import com.aurionpro.loan.entity.LoanOfficer;
 import com.aurionpro.loan.entity.LoanRequest;
 import com.aurionpro.loan.entity.Loanstatus;
 import com.aurionpro.loan.repository.LoanOfficerRepository;
+=======
+import com.aurionpro.loan.dto.LoanResponseDto;
+import com.aurionpro.loan.dto.PageResponse;
+import com.aurionpro.loan.entity.LoanRequest;
+import com.aurionpro.loan.entity.Loanstatus;
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 import com.aurionpro.loan.repository.LoanRequestRepository;
 
 @Service
@@ -32,9 +42,12 @@ public class LoanRequestServiceImpl implements LoanRequestService{
 	private LoanRequestRepository loanRequestRepository;
     @Autowired 
     private ModelMapper modelMapper; 
+<<<<<<< HEAD
     
     @Autowired
     private LoanOfficerRepository loanOfficerRepository;
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 	
 	@Override
 	public PageResponse<LoanResponseDto> getAllLoanRequest(int pageNumber, int pageSize) {
@@ -134,6 +147,7 @@ public class LoanRequestServiceImpl implements LoanRequestService{
 		return modelMapper.map(LoanRequest, LoanResponseDto.class);
 	}
 
+<<<<<<< HEAD
 	@Override
 	public PageResponse<AdminViewLoanRequestDto> viewLoanReequestByadmin(int pageNumber ,int pageSize) {
 	
@@ -225,4 +239,6 @@ public class LoanRequestServiceImpl implements LoanRequestService{
 	        );
 	    }
 	
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 }

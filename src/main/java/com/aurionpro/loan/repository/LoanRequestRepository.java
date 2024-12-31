@@ -22,6 +22,7 @@ public interface LoanRequestRepository extends JpaRepository<LoanRequest, Intege
 
 	    Page<LoanRequest> findByLoanscheme_SchemenameAndLoanstatus(String loanschemeName, Loanstatus loanstatus, Pageable pageable);
 	    Page<LoanRequest> findByLoanstatusAndClosed(Loanstatus loanstatus, boolean closed, Pageable pageable);
+<<<<<<< HEAD
 
 	    @Query("SELECT lr.loanamount, lr.time, ls.schemename, u.firstName, u.lastName, lo.firstName, lo.lastName " +
 	            "FROM LoanRequest lr " +
@@ -64,4 +65,6 @@ public interface LoanRequestRepository extends JpaRepository<LoanRequest, Intege
 	    Page<LoanRequestDetailsDTO> findLoanRequestDetails1(Pageable pageable);
 	    }
 
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 

@@ -35,6 +35,10 @@ public class Login {
 	@Column(name="password")
 	private String password;
 	
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 		
 		@ManyToMany(fetch = FetchType.EAGER)
 		@JoinTable(joinColumns = @JoinColumn(name="login_id"), 

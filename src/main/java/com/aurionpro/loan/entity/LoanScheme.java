@@ -32,9 +32,15 @@ public class LoanScheme {
 	private double minamount;
 	@Column(name="interest")
 	private double interest;
+<<<<<<< HEAD
 	@Column(name="deleted")
 	private boolean isdeleted;
 	
+=======
+//	@Column(name="deleted")
+//	private boolean deleted;
+//	
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 	@OneToMany(mappedBy = "loanscheme",cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
 	private List<LoanRequest> loanrequest;
 }

@@ -23,7 +23,7 @@ public interface UserService {
 
 UserResponseDto addUser(UserRequestDto userRequestDto);
 	
-	PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
+	PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
 	
 	LoanResponseDto applyLoan(LoanRequestDto loanRequestDto);
 	
@@ -37,16 +37,25 @@ UserResponseDto addUser(UserRequestDto userRequestDto);
 	
 	EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto);
 	
-	PageResponseDto<EnquiryResponseDto> getAllQueries(int pageSize ,int pageNumber);
+	PageResponse<EnquiryResponseDto> getAllQueries(int pageSize ,int pageNumber);
 	
 	RequiredDocumentsResponseDto addFileToDatabase(RequiredDocumentsRequestDto requiredDocumentsRequestDto);
 
 	RequiredDocumentsResponseDto uploadFile(MultipartFile file) throws IOException;
 
 	PageResponse<UserAdminViewResponse> getAllUser(int pageSize ,int pageNumber);
+<<<<<<< HEAD
 	PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize ,int pageNumber ,String firstName);
 	UserAdminViewResponse getUserByEmail(String email);
 	UserAdminViewResponse getUserById(int Id);
+=======
+//	PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize ,int pageNumber ,String firstName);
+//	UserAdminViewResponse getUserByEmail(String email);
+	UserAdminViewResponse getUserById(int Id);
+	
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
+	
+	PageResponse<LoanResponseDto> getAllAppliedLoan(int pageSize ,int pageNumber);
 	
 	
 	

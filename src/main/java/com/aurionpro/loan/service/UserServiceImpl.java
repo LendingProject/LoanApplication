@@ -45,47 +45,42 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
 import jakarta.transaction.Transactional;
+
 @Service
-public class UserServiceImpl  implements UserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper mapper;
-	
+
 	@Autowired
 	private UserRepository userRepo;
-	
-	
+
 	@Autowired
 	private LoanSchemeRepository loanSchemeRepo;
-	
-	
-	
-	
+
 	@Autowired
 	private LoanRequestRepository loanRequestRepo;
-	
+
 	@Autowired
 	private EmiRepository emiRepo;
-	
+
 	@Autowired
 	private EnquiryRepository queryRepo;
-	
-	
-	
 
 	@Override
 	public UserResponseDto addUser(UserRequestDto userRequestDto) {
 		System.out.println("UserRequestDto: " + userRequestDto);
 		User user = mapper.map(userRequestDto, User.class);
 		User dbUser = userRepo.save(user);
-		
+
 		UserResponseDto userResponseDto = mapper.map(dbUser, UserResponseDto.class);
-		
+
 		return userResponseDto;
 	}
 
 	@Override
-	public PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
+	public PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
+<<<<<<< HEAD
 		
 		 Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize); 
 		 
@@ -94,197 +89,245 @@ public class UserServiceImpl  implements UserService{
 	     Page<LoanSchemeResponseDto> loanSchemeResponseDto = dbUserPage.map(loanScheme -> mapper.map(loanScheme, LoanSchemeResponseDto.class)); 
 	 
 	   
-	    PageResponseDto<LoanSchemeResponseDto> responsePageUser = new PageResponseDto<>(); 
+	    PageResponse<LoanSchemeResponseDto> responsePageUser = new PageResponse<>(); 
 	    responsePageUser.setTotalElements(loanSchemeResponseDto.getTotalElements());
 	    responsePageUser.setTotalPages(loanSchemeResponseDto.getTotalPages());
 	    responsePageUser.setPageSize(loanSchemeResponseDto.getSize());
+=======
+
+		// Adjusting for 0-based index, subtract 1 from pageNumber if it's 1-based.
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+		// Fetching data from the database
+		Page<LoanScheme> dbUserPage = loanSchemeRepo.findAll(pageable);
+
+		// Mapping the LoanScheme to LoanSchemeResponseDto
+		Page<LoanSchemeResponseDto> loanSchemeResponseDto = dbUserPage
+				.map(loanScheme -> mapper.map(loanScheme, LoanSchemeResponseDto.class));
+
+		// Creating the response
+		PageResponse<LoanSchemeResponseDto> responsePageUser = new PageResponse<>();
+		responsePageUser.setTotalElements(loanSchemeResponseDto.getTotalElements());
+		responsePageUser.setTotalPages(loanSchemeResponseDto.getTotalPages());
+		responsePageUser.setPageSize(loanSchemeResponseDto.getSize());
+>>>>>>> d100f990cbc8cb8eaa07d0f5c16bb47716c5eb63
 		responsePageUser.setLastPage(loanSchemeResponseDto.isLast());
 		responsePageUser.setContents(loanSchemeResponseDto.getContent());
-		
-		System.out.println("dbUserPage: " + dbUserPage.getContent());
-		System.out.println("loanSchemeResponseDto: " + loanSchemeResponseDto.getContent());
 
-	 
-	    return responsePageUser;
+		// Debugging: Optional - Remove if no longer needed
+		// System.out.println("dbUserPage: " + dbUserPage.getContent());
+		// System.out.println("loanSchemeResponseDto: " +
+		// loanSchemeResponseDto.getContent());
+
+		return responsePageUser;
 	}
-	
+
 	@Override
 	public LoanResponseDto applyLoan(LoanRequestDto loanRequestDto) {
-	
-	    LoanRequest loanRequest = mapper.map(loanRequestDto, LoanRequest.class);
 
-	   
-	    double loanAmount = loanRequest.getLoanamount();
-	    int timeInYears = loanRequest.getTime();
-	   
-	    
-	
-		  LoanScheme loanScheme =
-		  loanSchemeRepo.findById(loanRequestDto.getLoanscheme().getId())
-		  .orElseThrow(() -> new
-		  IllegalArgumentException("Invalid loan scheme ID provided."));
-		  loanRequest.setLoanscheme(loanScheme);
-		
-	    
-	   
+		LoanRequest loanRequest = mapper.map(loanRequestDto, LoanRequest.class);
 
+		double loanAmount = loanRequest.getLoanamount();
+		int timeInYears = loanRequest.getTime();
 
-	    if (loanScheme == null) {
-	        throw new IllegalArgumentException("Loan scheme must be provided.");
-	    }
-	    double interestRate = loanScheme.getInterest();
+		LoanScheme loanScheme = loanSchemeRepo.findById(loanRequestDto.getLoanscheme().getId())
+				.orElseThrow(() -> new IllegalArgumentException("Invalid loan scheme ID provided."));
+		loanRequest.setLoanscheme(loanScheme);
 
-	    double simpleInterest = (loanAmount * interestRate * timeInYears) / 100;
+		if (loanScheme == null) {
+			throw new IllegalArgumentException("Loan scheme must be provided.");
+		}
+		double interestRate = loanScheme.getInterest();
 
-	    double totalRepayAmount = loanAmount + simpleInterest;
+		double simpleInterest = (loanAmount * interestRate * timeInYears) / 100;
 
-	    double monthlyRepayment = totalRepayAmount / (timeInYears * 12);
+		double totalRepayAmount = loanAmount + simpleInterest;
 
-	    loanRequest.setRepayamount(totalRepayAmount);
+		double monthlyRepayment = totalRepayAmount / (timeInYears * 12);
 
-	    
-	    LoanRequest dbLoan = loanRequestRepo.save(loanRequest);
+		loanRequest.setRepayamount(totalRepayAmount);
 
-	    // Map the persisted LoanRequest entity to the response DTO
-	    LoanResponseDto loanResponseDto = mapper.map(dbLoan, LoanResponseDto.class);
+		LoanRequest dbLoan = loanRequestRepo.save(loanRequest);
 
-	    // Add calculated values to the response DTO
-	    loanResponseDto.setSimpleInterest(simpleInterest);
-	    loanResponseDto.setTotalRepayAmount(totalRepayAmount);
-	    loanResponseDto.setMonthlyRepayment(monthlyRepayment);
+		// Map the persisted LoanRequest entity to the response DTO
+		LoanResponseDto loanResponseDto = mapper.map(dbLoan, LoanResponseDto.class);
 
-	    return loanResponseDto;
+		// Add calculated values to the response DTO
+		loanResponseDto.setSimpleInterest(simpleInterest);
+		loanResponseDto.setTotalRepayAmount(totalRepayAmount);
+		loanResponseDto.setMonthlyRepayment(monthlyRepayment);
+
+		return loanResponseDto;
 	}
-
 
 	@Override
 	public EmiResponseDto emiPayment(EmiRequestDto emiRequestDto) {
-		
+
 		Emi emi = mapper.map(emiRequestDto, Emi.class);
 		Emi dbEmi = emiRepo.save(emi);
-		
+
 		EmiResponseDto emiResponseDto = mapper.map(dbEmi, EmiResponseDto.class);
-		
-		return emiResponseDto; 
+
+		return emiResponseDto;
 	}
 
 	@Override
 	public PageResponseDto<EmiResponseDto> getAllEmis(int pageSize, int pageNumber) {
-		
-		Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize); 
-		 
-	     Page<Emi> dbEmiPage = emiRepo.findAll(pageable); 
-	      
-	     Page<EmiResponseDto> emiResponseDto = dbEmiPage.map(emi -> mapper.map(emi, EmiResponseDto.class)); 
-	 
-	   
-	    PageResponseDto<EmiResponseDto> responsePageEmi = new PageResponseDto<>(); 
-	    responsePageEmi.setTotalElements(emiResponseDto.getTotalElements());
-	    responsePageEmi.setTotalPages(emiResponseDto.getTotalPages());
-	    responsePageEmi.setPageSize(emiResponseDto.getSize());
-	    responsePageEmi.setLastPage(emiResponseDto.isLast());
-	    responsePageEmi.setContents(emiResponseDto.getContent());
-		
+
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+		Page<Emi> dbEmiPage = emiRepo.findAll(pageable);
+
+		Page<EmiResponseDto> emiResponseDto = dbEmiPage.map(emi -> mapper.map(emi, EmiResponseDto.class));
+
+		PageResponseDto<EmiResponseDto> responsePageEmi = new PageResponseDto<>();
+		responsePageEmi.setTotalElements(emiResponseDto.getTotalElements());
+		responsePageEmi.setTotalPages(emiResponseDto.getTotalPages());
+		responsePageEmi.setPageSize(emiResponseDto.getSize());
+		responsePageEmi.setLastPage(emiResponseDto.isLast());
+		responsePageEmi.setContents(emiResponseDto.getContent());
+
 		System.out.println("dbUserPage: " + dbEmiPage.getContent());
 		System.out.println("loanSchemeResponseDto: " + emiResponseDto.getContent());
 
-	 
-	    return responsePageEmi;
+		return responsePageEmi;
 	}
 
+<<<<<<< HEAD
+
+@Override 
+ public EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto) { 
+     User user = userRepo.findById(enquiryRequestDto.getUserId()) 
+                               .orElseThrow(() -> new RuntimeException("User not found")); 
+ 
+     Enquiry query = mapper.map(enquiryRequestDto, Enquiry.class); 
+     query.setUser(user); 
+     Enquiry dbQuery = queryRepo.save(query); 
+     EnquiryResponseDto queryResponseDto = mapper.map(dbQuery, EnquiryResponseDto.class); 
+ 
+     return queryResponseDto; 
+ }
+
+=======
 	@Override
 	public EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto) {
+		User user = userRepo.findById(enquiryRequestDto.getUserId())
+				.orElseThrow(() -> new RuntimeException("User not found"));
 
 		Enquiry query = mapper.map(enquiryRequestDto, Enquiry.class);
+		query.setUser(user);
 		Enquiry dbQuery = queryRepo.save(query);
-		
 		EnquiryResponseDto queryResponseDto = mapper.map(dbQuery, EnquiryResponseDto.class);
-		
+
 		return queryResponseDto;
+	}
+>>>>>>> d100f990cbc8cb8eaa07d0f5c16bb47716c5eb63
+
+	@Autowired
+	private Cloudinary cloudinary;
+
+	@Autowired
+	private RequiredDocumentsRepository requiredDocumentRepository;
+
+	@Transactional
+	@Override
+	public RequiredDocumentsResponseDto uploadFile(MultipartFile file) throws IOException {
+		RequiredDocumentsResponseDto response = new RequiredDocumentsResponseDto();
+
+		if (file == null || file.isEmpty()) {
+			response.setStatus("FAILURE");
+			response.setMessage("No file provided.");
+			return response;
+		}
+
+		try {
+
+			Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(),
+					ObjectUtils.asMap("resource_type", "auto"));
+
+			String documentOneLink = uploadResult.get("url").toString();
+
+			LoanRequest loanRequest = new LoanRequest();
+
+			loanRequest = loanRequestRepo.save(loanRequest);
+
+			RequiredDocuments requiredDocuments = new RequiredDocuments();
+			requiredDocuments.setDocumentOneLink(documentOneLink);
+			requiredDocuments.setLoanrequest(loanRequest); // Now we associate the LoanRequest
+
+			requiredDocumentRepository.save(requiredDocuments);
+
+			response.setDocumentId(requiredDocuments.getId());
+			response.setDocumentOneLink(documentOneLink);
+			response.setStatus("SUCCESS");
+			response.setMessage("File uploaded and saved successfully.");
+
+		} catch (IOException e) {
+			// Handle the exception during file upload
+			response.setStatus("FAILURE");
+			response.setMessage("Error occurred while uploading the file: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return response;
 	}
 
 	@Override
-	public PageResponseDto<EnquiryResponseDto> getAllQueries(int pageSize, int pageNumber) {
-		
-		Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize); 
-		 
-	     Page<Enquiry> dbQueryPage = queryRepo.findAll(pageable); 
-	      
-	     Page<EnquiryResponseDto> queryResponseDto = dbQueryPage.map(query -> mapper.map(query, EnquiryResponseDto.class)); 
-	 
-	   
-	    PageResponseDto<EnquiryResponseDto> responsePageQuery = new PageResponseDto<>(); 
-	    responsePageQuery.setTotalElements(queryResponseDto.getTotalElements());
-	    responsePageQuery.setTotalPages(queryResponseDto.getTotalPages());
-	    responsePageQuery.setPageSize(queryResponseDto.getSize());
-	    responsePageQuery.setLastPage(queryResponseDto.isLast());
-	    responsePageQuery.setContents(queryResponseDto.getContent());
-		
+	public PageResponse<UserAdminViewResponse> getAllUser(int pageSize, int pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+		Page<User> Userpage = userRepo.findAll(pageable);
+		List<User> dbLoanRequest = Userpage.getContent();
+		List<UserAdminViewResponse> users = new ArrayList<>();
+		dbLoanRequest.forEach((user) -> {
+			UserAdminViewResponse userDto = mapper.map(user, UserAdminViewResponse.class);
+			users.add(userDto);
+		});
+		PageResponse<UserAdminViewResponse> response = new PageResponse<>();
+		response.setContents(users);
+		response.setLastPage(Userpage.isLast());
+		response.setPageSize(Userpage.getSize());
+		response.setTotalElements(Userpage.getTotalElements());
+		response.setTotalPages(Userpage.getTotalPages());
 
-	    return responsePageQuery;
+		return response;
 	}
-	  @Autowired
-	    private Cloudinary cloudinary;
 
-	    @Autowired
-	    private RequiredDocumentsRepository requiredDocumentRepository;
+//		@Override
+//		public PageResponse<UserAdminViewResponse> getUserByFirstName(int pageSize, int pageNumber, String firstName) {
+//			Pageable pageable =  PageRequest.of(pageNumber, pageSize);
+//			Page<User> Userpage =  userRepo.findByFirstName(pageable,firstName);
+//			List<User> dbLoanRequest =  Userpage.getContent();
+//			List<UserAdminViewResponse> users =  new ArrayList<>();
+//			dbLoanRequest.forEach((user)->{
+//				UserAdminViewResponse userDto = mapper.map(user, UserAdminViewResponse.class);
+//				users.add(userDto);
+//			});
+//			PageResponse<UserAdminViewResponse> response =  new PageResponse<UserAdminViewResponse>();
+//			response.setContents(users);
+//			response.setLastPage(Userpage.isLast());
+//			response.setPageSize(Userpage.getSize());
+//			response.setTotalElements(Userpage.getTotalElements());
+//			response.setTotalPages(Userpage.getTotalPages());
+//
+//			return response;
+//		}
 
+//		@Override
+//		public UserAdminViewResponse getUserByEmail(String email) {
+//			User user =  userRepo.findAll(email);
+//			if(user ==  null)
+//				throw new UserException("Cannot found the User with emial: "+email);
+//
+//			return mapper.map(user, UserAdminViewResponse.class);
+//		}
 
-	    @Transactional
-	    @Override
-	    public RequiredDocumentsResponseDto uploadFile(MultipartFile file) throws IOException {
-	        RequiredDocumentsResponseDto response = new RequiredDocumentsResponseDto();
-
-	        
-	        if (file == null || file.isEmpty()) {
-	            response.setStatus("FAILURE");
-	            response.setMessage("No file provided.");
-	            return response;
-	        }
-
-	        try {
-	          
-	            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(),
-	                    ObjectUtils.asMap("resource_type", "auto"));
-
-	         
-	            String documentOneLink = uploadResult.get("url").toString();
-
-	          
-	            LoanRequest loanRequest = new LoanRequest();
-	           
-	            loanRequest = loanRequestRepo.save(loanRequest);
-
-	           
-	            RequiredDocuments requiredDocuments = new RequiredDocuments();
-	            requiredDocuments.setDocumentOneLink(documentOneLink);
-	            requiredDocuments.setLoanrequest(loanRequest);  // Now we associate the LoanRequest
-
-	         
-	            requiredDocumentRepository.save(requiredDocuments);
-
-	          
-	            response.setDocumentId(requiredDocuments.getId());
-	            response.setDocumentOneLink(documentOneLink);
-	            response.setStatus("SUCCESS");
-	            response.setMessage("File uploaded and saved successfully.");
-
-	        } catch (IOException e) {
-	            // Handle the exception during file upload
-	            response.setStatus("FAILURE");
-	            response.setMessage("Error occurred while uploading the file: " + e.getMessage());
-	            e.printStackTrace();
-	        }
-
-	        return response;
-	    }
-
-
-		@Override
-		public RequiredDocumentsResponseDto addFileToDatabase(RequiredDocumentsRequestDto requiredDocumentsRequestDto) {
-			// TODO Auto-generated method stub
-			return null;
+	@Override
+	public UserAdminViewResponse getUserById(int Id) {
+		Optional<User> user = userRepo.findById(Id);
+		if (user.isEmpty()) {
+			throw new UserException("Cannot found the User with id: " + Id);
 		}
+<<<<<<< HEAD
 		
 		
 
@@ -347,4 +390,56 @@ public class UserServiceImpl  implements UserService{
 		}
 
 		
+=======
+		User dbUser = user.get();
+		return mapper.map(user, UserAdminViewResponse.class);
+	}
+
+	@Override
+	public PageResponse<LoanResponseDto> getAllAppliedLoan(int pageSize, int pageNumber) {
+
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+		Page<LoanRequest> dbLoanRequest = loanRequestRepo.findAll(pageable);
+
+		Page<LoanResponseDto> loanResponseDto = dbLoanRequest.map(loan -> mapper.map(loan, LoanResponseDto.class));
+
+		PageResponse<LoanResponseDto> responsePageLoan = new PageResponse<>();
+		responsePageLoan.setTotalElements(loanResponseDto.getTotalElements());
+		responsePageLoan.setTotalPages(loanResponseDto.getTotalPages());
+		responsePageLoan.setPageSize(loanResponseDto.getSize());
+		responsePageLoan.setLastPage(loanResponseDto.isLast());
+		responsePageLoan.setContents(loanResponseDto.getContent());
+
+		return responsePageLoan;
+
+	}
+
+	@Override
+	public PageResponse<EnquiryResponseDto> getAllQueries(int pageSize, int pageNumber) {
+
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+		Page<Enquiry> dbQueryPage = queryRepo.findAll(pageable);
+
+		Page<EnquiryResponseDto> queryResponseDto = dbQueryPage
+				.map(query -> mapper.map(query, EnquiryResponseDto.class));
+
+		PageResponse<EnquiryResponseDto> responsePageQuery = new PageResponse<>();
+		responsePageQuery.setTotalElements(queryResponseDto.getTotalElements());
+		responsePageQuery.setTotalPages(queryResponseDto.getTotalPages());
+		responsePageQuery.setPageSize(queryResponseDto.getSize());
+		responsePageQuery.setLastPage(queryResponseDto.isLast());
+		responsePageQuery.setContents(queryResponseDto.getContent());
+
+		return responsePageQuery;
+	}
+
+	@Override
+	public RequiredDocumentsResponseDto addFileToDatabase(RequiredDocumentsRequestDto requiredDocumentsRequestDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 }

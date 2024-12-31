@@ -36,7 +36,10 @@ public class RegistrationDto {
 	@NotNull
 	@NotBlank
 	private String pancardNumber;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 	@NotNull
 	@NotBlank
 	private Date dob;

@@ -15,6 +15,8 @@ public class EnquiryResponseDto {
 	private int enquiryId;
 
 	private String question;
+	
+	private String querytype;
 
 	private String response;
 	

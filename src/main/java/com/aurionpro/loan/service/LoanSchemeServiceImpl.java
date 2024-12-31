@@ -32,7 +32,10 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
     @Override
 	public LoanSchemeResponseDto addLoanScheme(LoanSchemeRequestDto loanSchemeRequestDto) {
 		 LoanScheme loanScheme = modelMapper.map(loanSchemeRequestDto, LoanScheme.class);
+<<<<<<< HEAD
 		 loanScheme.setIsdeleted(false);
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 	        LoanScheme savedLoanScheme = loanSchemeRepository.save(loanScheme);
 	        return modelMapper.map(savedLoanScheme, LoanSchemeResponseDto.class);
 	}
@@ -47,10 +50,15 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 		List<LoanScheme> dbLoanScehme =  pageScheme.getContent();	
 		List<LoanSchemeResponseDto> loanSchemes =  new ArrayList<>();
 		dbLoanScehme.forEach((loanScheme)->{
+<<<<<<< HEAD
 			LoanSchemeResponseDto response = modelMapper.map(loanScheme, LoanSchemeResponseDto.class);
 
 			   response.setIsdelete(loanScheme.isIsdeleted());
 			loanSchemes.add(response);
+=======
+			LoanSchemeResponseDto loanSchemeResponseDto = modelMapper.map(loanScheme, LoanSchemeResponseDto.class);
+			loanSchemes.add(loanSchemeResponseDto);
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 		});
 		PageResponse<LoanSchemeResponseDto> response =  new PageResponse<LoanSchemeResponseDto>(); 
 		response.setContents(loanSchemes);
@@ -71,6 +79,7 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 		if(optionalLoanScheme.isEmpty())
 			throw new RuntimeException("Cannot find LoanScheme with  Id: "+loanSchemeId);
 		
+<<<<<<< HEAD
 		 LoanScheme dbLoanScheme = optionalLoanScheme.get();
 
 		 
@@ -107,6 +116,31 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 		dto=modelMapper.map(dbLoanScheme, LoanSchemeResponseDto.class);
 		
 		return dto;
+=======
+		LoanScheme dbLoanScheme = optionalLoanScheme.get();
+//		dbLoanScheme.setDeleted(true);
+			return modelMapper.map(dbLoanScheme, LoanSchemeResponseDto.class);
+	}
+
+	@Override
+	public LoanSchemeResponseDto updateLoanScheme(UpdateLoanSchemeDto updateLoanSchemeDto) {
+		Optional<LoanScheme> optionalLoanScheme = loanSchemeRepository.findById(updateLoanSchemeDto.getLoanSchemeId());
+		if(optionalLoanScheme.isEmpty())
+			throw new RuntimeException("Cannot find LoanScheme with  Id: "+updateLoanSchemeDto.getLoanSchemeId());
+		
+		LoanScheme dbLoanScheme = optionalLoanScheme.get();
+		
+		if(updateLoanSchemeDto.getField().equals("schemename")) 
+			dbLoanScheme.setSchemename(updateLoanSchemeDto.getSchemename());	
+		if(updateLoanSchemeDto.getField().equals("maxamount")) 
+			dbLoanScheme.setMaxamount(updateLoanSchemeDto.getMaxamount());	
+		
+		if(updateLoanSchemeDto.getField().equals("minamount")) 
+			dbLoanScheme.setMinamount(updateLoanSchemeDto.getMinamount());	
+		if(updateLoanSchemeDto.getField().equals("interest")) 
+			dbLoanScheme.setInterest(updateLoanSchemeDto.getInterest());	
+		return modelMapper.map(dbLoanScheme, LoanSchemeResponseDto.class);
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 	}
 
 	@Override
@@ -129,6 +163,7 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 		
 		return response;
 	}
+<<<<<<< HEAD
 
 
 
@@ -142,4 +177,6 @@ public class LoanSchemeServiceImpl implements LoanSchemeService{
 		return modelMapper.map(dbLoanScheme, LoanSchemeResponseDto.class);
 
 	}
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 }

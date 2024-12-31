@@ -13,7 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/loanapp")
+<<<<<<< HEAD
 @CrossOrigin(origins = "http://localhost:4200")
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 public class LoanOfficerController {
 
     @Autowired
@@ -22,13 +25,14 @@ public class LoanOfficerController {
     // View loan requests assigned to loan officer
     @GetMapping("/{officerId}/loanrequests")
     public ResponseEntity<PageResponse<LoanResponseDto>> viewLoanRequests(
-            @PathVariable int officerId, 
-            @RequestParam int pageNumber, 
-            @RequestParam int pageSize) {
-        
+            @PathVariable("officerId") int officerId,
+            @RequestParam(name = "pageNumber") int pageNumber,
+            @RequestParam(name = "pageSize") int pageSize) {
+
         PageResponse<LoanResponseDto> loanRequests = loanOfficerService.viewLoanRequests(officerId, pageNumber, pageSize);
         return ResponseEntity.ok(loanRequests);
     }
+
     // Approve a loan
     @PostMapping("/approveloan")
     public ResponseEntity<ApproveLoanResponseDto> approveLoan(@RequestBody ApproveLoanRequestDto approveLoanRequestDto) {
@@ -48,12 +52,23 @@ public class LoanOfficerController {
         ReplyEnquiryResponseDto enquiryResponse = loanOfficerService.replyToEnquiry(replyEnquiryRequestDto);
         return ResponseEntity.ok(enquiryResponse);
     }
+<<<<<<< HEAD
 //    //updation
 //    @PutMapping("/{officerId}/profile")
 //    public ResponseEntity<LoanOfficerProfileUpdateResponseDto> updateProfile(@PathVariable int officerId,@RequestBody @Valid LoanOfficerProfileUpdateRequestDto dto){
 //    	return ResponseEntity.ok(loanOfficerService.updateLoanOfficerProfile(officerId, dto));
 //    	
 //    }
+=======
+    //updation
+    @PutMapping("/{officerId}/profile")
+    public ResponseEntity<LoanOfficerProfileUpdateResponseDto> updateProfile(
+            @PathVariable(name = "officerId") int officerId,
+            @RequestBody @Valid LoanOfficerProfileUpdateRequestDto dto) {
+        return ResponseEntity.ok(loanOfficerService.updateLoanOfficerProfile(officerId, dto));
+    }
+
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
     
     @PostMapping("/loanofficer")
 	public ResponseEntity<LoanOfficerResponseDto> AddLoanOfficer(@RequestBody RegistrationDto registrationDto) {
@@ -64,6 +79,9 @@ public class LoanOfficerController {
 	public ResponseEntity<LoanOfficerResponseDto> deleteLoanOfficer(@RequestParam int id){
 		return  ResponseEntity.ok(loanOfficerService.deleteLoanOfficer(id));
 	}
+<<<<<<< HEAD
 	
 	  
+=======
+>>>>>>> 2aa52fc326558ed2110b8e0ed14d6d6112f4e4cc
 }
