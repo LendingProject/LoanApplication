@@ -21,13 +21,14 @@ public class LoanOfficerController {
     // View loan requests assigned to loan officer
     @GetMapping("/{officerId}/loanrequests")
     public ResponseEntity<PageResponse<LoanResponseDto>> viewLoanRequests(
-            @PathVariable int officerId, 
-            @RequestParam int pageNumber, 
-            @RequestParam int pageSize) {
-        
+            @PathVariable("officerId") int officerId,
+            @RequestParam(name = "pageNumber") int pageNumber,
+            @RequestParam(name = "pageSize") int pageSize) {
+
         PageResponse<LoanResponseDto> loanRequests = loanOfficerService.viewLoanRequests(officerId, pageNumber, pageSize);
         return ResponseEntity.ok(loanRequests);
     }
+
     // Approve a loan
     @PostMapping("/approveloan")
     public ResponseEntity<ApproveLoanResponseDto> approveLoan(@RequestBody ApproveLoanRequestDto approveLoanRequestDto) {
@@ -47,12 +48,14 @@ public class LoanOfficerController {
         ReplyEnquiryResponseDto enquiryResponse = loanOfficerService.replyToEnquiry(replyEnquiryRequestDto);
         return ResponseEntity.ok(enquiryResponse);
     }
-//    //updation
-//    @PutMapping("/{officerId}/profile")
-//    public ResponseEntity<LoanOfficerProfileUpdateResponseDto> updateProfile(@PathVariable int officerId,@RequestBody @Valid LoanOfficerProfileUpdateRequestDto dto){
-//    	return ResponseEntity.ok(loanOfficerService.updateLoanOfficerProfile(officerId, dto));
-//    	
-//    }
+    //updation
+    @PutMapping("/{officerId}/profile")
+    public ResponseEntity<LoanOfficerProfileUpdateResponseDto> updateProfile(
+            @PathVariable(name = "officerId") int officerId,
+            @RequestBody @Valid LoanOfficerProfileUpdateRequestDto dto) {
+        return ResponseEntity.ok(loanOfficerService.updateLoanOfficerProfile(officerId, dto));
+    }
+
     
     @PostMapping("/loanofficer")
 	public ResponseEntity<LoanOfficerResponseDto> AddLoanOfficer(@RequestBody RegistrationDto registrationDto) {

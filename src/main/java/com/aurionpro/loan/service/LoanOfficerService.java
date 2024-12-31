@@ -40,7 +40,7 @@ public interface LoanOfficerService {
 
 	
 //loan officer profile update
-//    LoanOfficerProfileUpdateResponseDto updateLoanOfficerProfile(int officerId,LoanOfficerProfileUpdateRequestDto loanOfficerProfileRequestDto);
+    LoanOfficerProfileUpdateResponseDto updateLoanOfficerProfile(int officerId,LoanOfficerProfileUpdateRequestDto loanOfficerProfileRequestDto);
 
 }
 

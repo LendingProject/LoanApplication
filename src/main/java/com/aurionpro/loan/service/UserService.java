@@ -23,7 +23,7 @@ public interface UserService {
 
 UserResponseDto addUser(UserRequestDto userRequestDto);
 	
-	PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
+	PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize ,int pageNumber);
 	
 	LoanResponseDto applyLoan(LoanRequestDto loanRequestDto);
 	

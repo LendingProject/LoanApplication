@@ -28,13 +28,13 @@ public class LoanOfficerProfileUpdateRequestDto {
     @Pattern(regexp = "^[A-Za-z]+(?:[ -'][A-Za-z]+)*$", message = "Enter valid last name")
     private String lastName;
 
-    @NotNull
-    @NotBlank
-    @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-        message = "Enter a valid password"
-    )
-    private String password;
+//    @NotNull
+//    @NotBlank
+//    @Pattern(
+//        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+//        message = "Enter a valid password"
+//    )
+//    private String password;
 
     @NotNull(message = "DOB cannot be null")
     private Date dob;

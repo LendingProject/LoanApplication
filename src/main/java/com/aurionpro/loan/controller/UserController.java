@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,11 @@ import com.aurionpro.loan.dto.UserResponseDto;
 import com.aurionpro.loan.service.UserService;
 import com.aurionpro.loan.service.UserServiceImpl;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/loanapp")
+@CrossOrigin(origins="http://localhost:4200/")
 public class UserController {
 	
 	@Autowired
@@ -44,13 +48,13 @@ public class UserController {
 	 @PostMapping("/upload")
 	    public ResponseEntity<RequiredDocumentsResponseDto> uploadFile(@RequestParam("file") MultipartFile file) {
 	        try {
-	            // Call the service to handle file upload and get the URL
+	           
 	            RequiredDocumentsResponseDto response = userService.uploadFile(file);
 
-	            // Return the response with status and URL or error message
+	           
 	            return ResponseEntity.ok(response);
 	        } catch (IOException e) {
-	            // Log and return an error response in case of an exception
+	            
 	            e.printStackTrace();
 	            RequiredDocumentsResponseDto errorResponse = new RequiredDocumentsResponseDto();
 	            errorResponse.setStatus("FAILURE");
@@ -73,7 +77,7 @@ public class UserController {
 	
 	
 	@GetMapping("/loanschemes")
-	public ResponseEntity<PageResponseDto<LoanSchemeResponseDto>> getAllLoanSchemeOfUser(@RequestParam int pageSize,@RequestParam int pageNumber){ 
+	public ResponseEntity<PageResponse<LoanSchemeResponseDto>> getAllLoanSchemeOfUser(@RequestParam int pageSize,@RequestParam int pageNumber){ 
 		   
 		  return ResponseEntity.ok(userService.getAllLoanScheme(pageNumber, pageSize)); 
 		 }
@@ -101,10 +105,11 @@ public class UserController {
 	}
 	
 	@PostMapping("/submitquery")
-	private ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto queryRequestDto){
-		
-		return ResponseEntity.ok(userService.submitQueries(queryRequestDto));
+	public ResponseEntity<EnquiryResponseDto> submitQueries(@RequestBody EnquiryRequestDto enquiryRequestDto) {
+	    EnquiryResponseDto response = userService.submitQueries(enquiryRequestDto);
+	    return ResponseEntity.ok(response);
 	}
+
 	
 	@GetMapping("/allqueries")
 	public ResponseEntity<PageResponseDto<EnquiryResponseDto>> getAllQueries(@RequestParam int pageSize,@RequestParam int pageNumber){ 

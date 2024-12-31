@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class EnquiryRequestDto {
 	@NotNull
 	@NotBlank
-     private int userId;
+     private int  userId;
 	@NotNull
 	@NotBlank
 	private String question;

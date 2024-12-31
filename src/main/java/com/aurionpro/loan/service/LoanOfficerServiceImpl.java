@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LoanOfficerServiceImpl implements LoanOfficerService {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
     @Autowired
     private LoanOfficerRepository loanOfficerRepository;
@@ -140,33 +143,33 @@ public class LoanOfficerServiceImpl implements LoanOfficerService {
 	
 	
 	
-//
-//	@Override
-//	public LoanOfficerProfileUpdateResponseDto updateLoanOfficerProfile(int officerId,
-//			LoanOfficerProfileUpdateRequestDto officerDto) {
-//		LoanOfficer officer=loanOfficerRepository.findById(officerId).orElseThrow(()->new RuntimeException("Loan Officer not found with id: "+officerId));
-//		officer.setFirstName(officerDto.getFirstName());
-//		officer.setLastName(officerDto.getLastName());
-//		
+
+	@Override
+	public LoanOfficerProfileUpdateResponseDto updateLoanOfficerProfile(int officerId,
+			LoanOfficerProfileUpdateRequestDto officerDto) {
+		LoanOfficer officer=loanOfficerRepository.findById(officerId).orElseThrow(()->new RuntimeException("Loan Officer not found with id: "+officerId));
+		officer.setFirstName(officerDto.getFirstName());
+		officer.setLastName(officerDto.getLastName());
+		
 //		if(officerDto.getPassword()!=null && !officerDto.getPassword().isBlank()) {
 //			officer.setPassword(officerDto.getPassword());
 //		}
-//		officer.setPancardNumber(officerDto.getPancardNumber());
-//		officer.setDob(officerDto.getDob());
-//		officer.setContactNumber(officerDto.getContactNumber());
-//		officer.setGender(officerDto.getGender());
-//		LoanOfficer updateOfficer=loanOfficerRepository.save(officer);
-//		
-//		return modelMapper.map(updateOfficer, LoanOfficerProfileUpdateResponseDto.class);
+		officer.setPancardNumber(officerDto.getPancardNumber());
+		officer.setDob(officerDto.getDob());
+		officer.setContactNumber(officerDto.getContactNumber());
+		officer.setGender(officerDto.getGender());
+		LoanOfficer updateOfficer=loanOfficerRepository.save(officer);
+		
+		return modelMapper.map(updateOfficer, LoanOfficerProfileUpdateResponseDto.class);
 	
-	
-
+	}
+ 
 	@Override
 	public LoanOfficerResponseDto addLoanOfficer(RegistrationDto registrationDto) {
 		Login login = new Login();
 		
 		login.setUsername(registrationDto.getUsername());
-		login.setPassword(registrationDto.getPassword());
+		login.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
 		List<Role>  roles  = new ArrayList<>();
 		Role role = roleRepo.findByRole("ROLE_LOANOFFICER").get();
 		roles.add(role);

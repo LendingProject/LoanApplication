@@ -85,7 +85,7 @@ public class UserServiceImpl  implements UserService{
 	}
 
 	@Override
-	public PageResponseDto<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
+	public PageResponse<LoanSchemeResponseDto> getAllLoanScheme(int pageSize, int pageNumber) {
 		
 		 Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize); 
 		 
@@ -94,7 +94,7 @@ public class UserServiceImpl  implements UserService{
 	     Page<LoanSchemeResponseDto> loanSchemeResponseDto = dbUserPage.map(loanScheme -> mapper.map(loanScheme, LoanSchemeResponseDto.class)); 
 	 
 	   
-	    PageResponseDto<LoanSchemeResponseDto> responsePageUser = new PageResponseDto<>(); 
+	    PageResponse<LoanSchemeResponseDto> responsePageUser = new PageResponse<>(); 
 	    responsePageUser.setTotalElements(loanSchemeResponseDto.getTotalElements());
 	    responsePageUser.setTotalPages(loanSchemeResponseDto.getTotalPages());
 	    responsePageUser.setPageSize(loanSchemeResponseDto.getSize());
@@ -192,16 +192,20 @@ public class UserServiceImpl  implements UserService{
 	    return responsePageEmi;
 	}
 
-	@Override
-	public EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto) {
 
-		Enquiry query = mapper.map(enquiryRequestDto, Enquiry.class);
-		Enquiry dbQuery = queryRepo.save(query);
-		
-		EnquiryResponseDto queryResponseDto = mapper.map(dbQuery, EnquiryResponseDto.class);
-		
-		return queryResponseDto;
-	}
+@Override 
+ public EnquiryResponseDto submitQueries(EnquiryRequestDto enquiryRequestDto) { 
+     User user = userRepo.findById(enquiryRequestDto.getUserId()) 
+                               .orElseThrow(() -> new RuntimeException("User not found")); 
+ 
+     Enquiry query = mapper.map(enquiryRequestDto, Enquiry.class); 
+     query.setUser(user); 
+     Enquiry dbQuery = queryRepo.save(query); 
+     EnquiryResponseDto queryResponseDto = mapper.map(dbQuery, EnquiryResponseDto.class); 
+ 
+     return queryResponseDto; 
+ }
+
 
 	@Override
 	public PageResponseDto<EnquiryResponseDto> getAllQueries(int pageSize, int pageNumber) {
